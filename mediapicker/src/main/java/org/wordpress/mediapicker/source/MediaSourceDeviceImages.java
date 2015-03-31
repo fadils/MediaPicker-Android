@@ -75,6 +75,8 @@ public class MediaSourceDeviceImages implements MediaSource {
                     if (mListener != null) {
                         mListener.onMediaLoaded(true);
                     }
+
+                    mGatheringMedia = false;
                 }
             }.execute();
 
