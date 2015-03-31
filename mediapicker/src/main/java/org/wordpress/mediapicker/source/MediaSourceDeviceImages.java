@@ -86,7 +86,9 @@ public class MediaSourceDeviceImages implements MediaSource {
 
     @Override
     public void cleanup() {
-        mMediaItems.clear();
+        if (!mGatheringMedia) {
+            mMediaItems.clear();
+        }
     }
 
     @Override

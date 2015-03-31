@@ -31,11 +31,14 @@ public class MediaSourceDeviceVideos implements MediaSource {
             MediaStore.Video.Media.DATA,
             MediaStore.Video.Media.DATE_TAKEN };
 
+    private OnMediaChange mListener;
     private ContentResolver mContentResolver;
     private List<MediaItem> mMediaItems;
+    private boolean mGatheringMedia;
 
     public MediaSourceDeviceVideos() {
         mContentResolver = null;
+        mGatheringMedia = false;
     }
 
     private void setMediaItems(List<MediaItem> mediaItems) {
@@ -49,15 +52,38 @@ public class MediaSourceDeviceVideos implements MediaSource {
 
     @Override
     public void gather() {
+        if (!mGatheringMedia) {
+            new AsyncTask<Void, String, Void>() {
+                @Override
+                protected Void doInBackground(Void... params) {
+                    createMediaItems();
+                    return null;
+                }
+
+                @Override
+                public void onPostExecute(Void result) {
+                    if (mListener != null) {
+                        mListener.onMediaLoaded(true);
+                    }
+
+                    mGatheringMedia = false;
+                }
+            }.execute();
+
+            mGatheringMedia = true;
+        }
     }
 
     @Override
     public void cleanup() {
+        if (!mGatheringMedia) {
+            mMediaItems.clear();
+        }
     }
 
     @Override
     public void setListener(final OnMediaChange listener) {
-        // Ignored
+        mListener = listener;
     }
 
     @Override
@@ -76,7 +102,7 @@ public class MediaSourceDeviceVideos implements MediaSource {
             convertView = inflater.inflate(R.layout.media_item_video, parent, false);
         }
 
-        if (convertView != null) {
+        if (convertView != null && position < mMediaItems.size()) {
             final MediaItem mediaItem = mMediaItems.get(position);
             final Uri imageSource = mediaItem.getPreviewSource();
 
