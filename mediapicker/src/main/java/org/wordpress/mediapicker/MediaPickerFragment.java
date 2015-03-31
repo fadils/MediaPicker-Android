@@ -141,12 +141,10 @@ public class MediaPickerFragment extends Fragment
         View mediaPickerView = inflater.inflate(viewToInflate, container, false);
         if (mediaPickerView != null) {
             mEmptyView = (TextView) mediaPickerView.findViewById(R.id.media_empty_view);
-            if (mEmptyView != null) {
-                if (mMediaSources.size() == 0) {
-                    mEmptyView.setText(getString(R.string.no_media_sources));
-                } else {
-                    mEmptyView.setText(mLoadingText);
-                }
+            if (mMediaSources.size() == 0) {
+                updateEmptyView(getString(R.string.no_media_sources));
+            } else {
+                updateEmptyView(mLoadingText);
             }
 
             mAdapterView = (AbsListView) mediaPickerView.findViewById(R.id.media_adapter_view);
@@ -263,13 +261,11 @@ public class MediaPickerFragment extends Fragment
             if (mAdapter.getCount() > 0) {
                 toggleEmptyVisibility();
                 mAdapter.notifyDataSetChanged();
-            } else if (mEmptyView != null) {
-                mEmptyView.setText(mEmptyText);
+            } else {
+                updateEmptyView(mEmptyText);
             }
         } else {
-            if (mEmptyView != null) {
-                mEmptyView.setText(mErrorText);
-            }
+            updateEmptyView(mErrorText);
         }
     }
 
@@ -288,6 +284,12 @@ public class MediaPickerFragment extends Fragment
     @Override
     public void onMediaChanged(MediaSource source, List<MediaItem> changedItems) {
         mAdapter.notifyDataSetChanged();
+    }
+
+    private void updateEmptyView(String text) {
+        if (mEmptyView != null) {
+            mEmptyView.setText(text);
+        }
     }
 
     /**
