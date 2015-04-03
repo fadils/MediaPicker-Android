@@ -265,24 +265,22 @@ public class MediaSourceDeviceImages implements MediaSource {
         return newContent;
     }
 
-    /*
-        Parcelable interface
-    */
+    /**
+     * {@link android.os.Parcelable} interface
+     */
 
     public static final Creator<MediaSourceDeviceImages> CREATOR =
             new Creator<MediaSourceDeviceImages>() {
                 public MediaSourceDeviceImages createFromParcel(Parcel in) {
                     List<MediaItem> parcelData = new ArrayList<>();
                     in.readTypedList(parcelData, MediaItem.CREATOR);
+                    MediaSourceDeviceImages newItem = new MediaSourceDeviceImages();
 
                     if (parcelData.size() > 0) {
-                        MediaSourceDeviceImages newItem = new MediaSourceDeviceImages();
                         newItem.setMediaItems(parcelData);
-
-                        return newItem;
                     }
 
-                    return null;
+                    return newItem;
                 }
 
                 public MediaSourceDeviceImages[] newArray(int size) {
@@ -297,8 +295,6 @@ public class MediaSourceDeviceImages implements MediaSource {
 
     @Override
     public void writeToParcel(Parcel destination, int flags) {
-        if (mMediaItems != null) {
-            destination.writeTypedList(mMediaItems);
-        }
+        destination.writeTypedList(mMediaItems);
     }
 }

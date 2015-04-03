@@ -241,15 +241,13 @@ public class MediaSourceDeviceVideos implements MediaSource {
                 public MediaSourceDeviceVideos createFromParcel(Parcel in) {
                     List<MediaItem> parcelData = new ArrayList<>();
                     in.readTypedList(parcelData, MediaItem.CREATOR);
+                    MediaSourceDeviceVideos newItem = new MediaSourceDeviceVideos();
 
                     if (parcelData.size() > 0) {
-                        MediaSourceDeviceVideos newItem = new MediaSourceDeviceVideos();
                         newItem.setMediaItems(parcelData);
-
-                        return newItem;
                     }
 
-                    return null;
+                    return newItem;
                 }
 
                 public MediaSourceDeviceVideos[] newArray(int size) {
@@ -264,8 +262,6 @@ public class MediaSourceDeviceVideos implements MediaSource {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        if (mMediaItems != null) {
-            dest.writeTypedList(mMediaItems);
-        }
+        dest.writeTypedList(mMediaItems);
     }
 }
