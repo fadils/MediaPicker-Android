@@ -1,6 +1,7 @@
 package org.wordpress.mediapicker.source;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -61,7 +62,6 @@ public class MediaSourceDeviceImages implements MediaSource {
     }
 
     @Override
-    public void gather() {
         if (!mGatheringMedia) {
             new AsyncTask<Void, String, Void>() {
                 @Override
@@ -75,6 +75,7 @@ public class MediaSourceDeviceImages implements MediaSource {
                     if (mListener != null) {
                         mListener.onMediaLoaded(true);
                     }
+    public void gather(Context context) {
 
                     mGatheringMedia = false;
                 }
