@@ -30,13 +30,13 @@ import java.util.List;
  */
 
 public class MediaSourceAdapter extends BaseAdapter {
-    private final LayoutInflater  mLayoutInflater;
+    private final Context mContext;
     private final ImageLoader.ImageCache mImageCache;
     private final List<MediaSource> mMediaSources;
 
     public MediaSourceAdapter(Context context, List<MediaSource> sources, ImageLoader.ImageCache imageCache) {
         mMediaSources = sources;
-        mLayoutInflater = LayoutInflater.from(context);
+        mContext = context;
         mImageCache = imageCache;
     }
 
@@ -44,7 +44,7 @@ public class MediaSourceAdapter extends BaseAdapter {
         for (MediaSource source : mMediaSources) {
             if (source != null) {
                 source.setListener(listener);
-                source.gather();
+                source.gather(mContext);
             }
         }
     }
@@ -85,7 +85,7 @@ public class MediaSourceAdapter extends BaseAdapter {
                 convertView = null;
             }
 
-            return itemSource.getView(position - offsetAtPosition(position), convertView, parent, mLayoutInflater, mImageCache);
+            return itemSource.getView(position - offsetAtPosition(position), convertView, parent, LayoutInflater.from(mContext), mImageCache);
         }
 
         return null;
