@@ -114,7 +114,7 @@ public class MediaPickerFragment extends Fragment
         super.onAttach(activity);
 
         // Per the documentation, the host Activity is the default listener
-        if (activity instanceof OnMediaSelected) {
+        if (mListener == null && activity instanceof OnMediaSelected) {
             mListener = (OnMediaSelected) activity;
         }
     }
@@ -123,12 +123,14 @@ public class MediaPickerFragment extends Fragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setDefaultTextValues(true);
+
         // If this is not being restored from a previous state use arguments to set state
         if (savedInstanceState == null) {
-            restoreFromBundle(getArguments());
-        } else {
-            restoreFromBundle(savedInstanceState);
+            savedInstanceState = getArguments();
         }
+
+        restoreFromBundle(savedInstanceState);
     }
 
     @Override
@@ -169,18 +171,13 @@ public class MediaPickerFragment extends Fragment
             outState.putString(KEY_LOADING_TEXT, mLoadingText);
         }
 
-        if (mErrorText != null && !mErrorText.equals("")) {
+        if (mErrorText != null) {
             outState.putString(KEY_ERROR_TEXT, mErrorText);
         }
 
-        if (mEmptyText != null && !mEmptyText.equals("")) {
+        if (mEmptyText != null) {
             outState.putString(KEY_EMPTY_TEXT, mEmptyText);
         }
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
@@ -258,7 +255,7 @@ public class MediaPickerFragment extends Fragment
     @Override
     public void onMediaLoaded(boolean success) {
         if (success) {
-            if (mAdapter.getCount() > 0) {
+            if (mAdapter != null && mAdapter.getCount() > 0) {
                 toggleEmptyVisibility();
                 mAdapter.notifyDataSetChanged();
             } else {
@@ -556,7 +553,7 @@ public class MediaPickerFragment extends Fragment
     private void addSelectionConfirmationButtonMenuItem(Menu menu) {
         if (menu != null && menu.findItem(R.id.menu_media_selection_confirmed) == null) {
             menu.add(Menu.NONE, R.id.menu_media_selection_confirmed, Menu.FIRST, R.string.confirm)
-                    .setIcon(R.drawable.action_mode_confirm_checkmark);
+                .setIcon(R.drawable.action_mode_confirm_checkmark);
         }
     }
 
